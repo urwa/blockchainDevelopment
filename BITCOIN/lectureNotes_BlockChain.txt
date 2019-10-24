@@ -1,0 +1,154 @@
+THE BITCOIN NeETWORK
+
+network of nodes (computers/servers)
+runs bitcoin software
+software code ensures nodes can find and establish connection
+transfer information
+
+Bitcoin Code implements Bitcoin protocol
+
+New node joins Bitcoin Network?
+- find one peer to connect to.
+- get a list of other peers from initial peer.
+Method 1: Bitcoin client contains hard-coded list of DNS servers -> list of bitcoin nodes IP address.
+Method 2: Bitcoin client can be given static IP address of known bitcoin node.
+
+Bitcoin network topology - not geographically defined.
+
+- initial handshake
+- version message to peer
+- peer verifies version compatability
+- peer acknowledges
+- establish connection by sending version ack message. msg header verack.
+- exchange information.
+  -- exchange IP addresses of peers.
+  -- name of local copy of block chain.
+  -- ask for missing blocks.
+  -- send missing blocks.
+
+  Bitcoin Network Information 
+  >> using Bitcoin-core-client
+  > bitcoin-cli getnetworkinfo
+    - bitcoin client version
+    - protocol version
+    - number of connections
+  > bitcoin-cli getpeerinfo
+    - info about each peer
+    - IP address
+    - bitcoin client version
+  
+  >> Web Explorers
+
+  Nodes Functions:
+  - Routing
+  - Storage
+  - Mining
+  - Wallet Services
+
+  - Bitcoin Core Client implementation in C++ has all 4 funcitonalities
+
+  Bare Minimum Node
+  - routing
+  - discover and connect with peers
+  - validate and propogate transactions and blocks through network
+  - keep network connection alive
+  - passing info through network
+
+  Full Blockchain Node
+  - stores local copy of entire blockchain database
+  - autonomously and authoritatively verify any transactions without external ref
+  - complete independance and freedom from central authority at cost of hardware storage space
+
+  Mining Node
+  - runs mining software to solve crypt. puzzle to win mining rewards
+  - add new transactions into blockchain
+  - does not necessarily have local copy of entire block chain
+  - can conenct to Bitcoin Extended Network to join mining pools
+  - depend on pool server to maintain full node
+
+  SPV Node
+  - Simplified Payment Verification node
+  - have Wallet Service without full copy of blockchain
+  - for devices with space and power constraint
+  - rely on other trust worthy full nodes
+  - less secure compared to full nodes
+  - only have block headers
+
+
+BLOCKCHAIN
+
+- ordered singly linked list of blocks
+- each block - set of transactions
+- can be stored in traditional database
+
+- Bitcoin Core Client - stores block chain + meta data - Google's LevelDB database
+
+- Genesis block - first block
+- hard coded in bitcoin client
+
+- height not actually stored in database
+- computed from a photo of database that stores the full copy of the blockchain
+- hence metadata 
+
+- each block identified by hash
+- digital fingerprint
+- SHA256 algorithm
+
+- Mining - generating a new block hash
+
+- Inside a block
+- size of block - 4B
+- header - 80B
+- no of transactions - 1B-9B
+- transactions - Variable
+
+- Inside a header
+- version - version of bitcoin protocol - 4B
+- previous block hash - 32B
+- Merkel root - represents all transactions of the block - 32B
+- timestamp - 4B
+- difficulty - 4B
+- Nonce - 4B
+
+- Header used to calculate block hash
+- Hash not actually stored in block
+
+BLOCKS LINKAGE
+- Full node can verify a new block + every transaction
+- SPV can not verify a new block but not every transaction
+
+- verfication follows:
+- examine incoming block header
+- compare previous block hash with hash of latest block
+- verfiy difficulty Level
+- hash new block header using SHA256
+- compare calculated hash value with difficulty number in header 
+
+Merkel root
+- root of a merkel tree - root of a binary tree made of crypt. hashes
+- 32B irrespective of number of transactions
+- recursively hashing pairs of leaf nodes (transactions) until one hash is left
+- requires even number of lead nodes
+- if odd number of nodes, duplicate the odd leaf node (transaction)
+- does not change transaction data in block chain, only effects merkel root
+
+SPV uses merkel root for verification?
+- establishes connection with full nodes in bitcoin network
+- secure and honest multiple full nodes
+- full nodes send new block headers as new blocks are mined
+- SPV nodes can ask for specific transaction information 
+  -- interested in incoming payment to its wallet address
+  -- bitcoin sent to wallet address
+  -- new transaction created / added to a block
+  -- full node sends this info to SPV node / sends transaction(hash) + block header + merkel path ( a small set of hashes < 1KB)
+  -- SPV node uses it create partial merkel tree
+     --- trans hash (32KB) + merkel path [1] (32KB)
+     --- compute hash
+     --- hash + merket path [2]
+     --- compute hash
+     --- continue until one hash left
+  -- compares calculaed merkel root with block header merkel root
+  -- if matches, transaction included
+  -- transaction existing in a block does not verify/validate a block
+  -- SPV waits for 6 or > blocks to consider a block valid/ transaction validity
+  -- prevents double spending / invalid transactions

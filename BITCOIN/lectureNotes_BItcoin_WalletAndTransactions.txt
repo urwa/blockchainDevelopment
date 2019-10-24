@@ -1,0 +1,81 @@
+BITCOIN WALLETS
+- software program that allows its user to send and recieve bitcoins
+- manages users public and private keys
+- encrypted private keys
+- user has password/ seed phrase 
+
+KEYS AND ADDRESSES
+- keys establish ownership
+- digital keys NOT part of bitcoin network
+- ind of bitcoin protocol
+- can be generated and managed by user's Wallet software without ref to bitcoin blockchain/ internet
+- enable properties of bitcoin: decentralized trust, digital ownership, cryptographic security
+- transactions require valid digital signature
+- only through private key
+
+PUBLIC KEY CRYPTOGRAPHY
+- Impossible to cal private key from public key
+- Easy to derive public key from private key
+
+- bitcoin key generation -> elliptic curve multiplication
+- secp256k1 standard: y^2 = x^3 + 7
+- public key = G * private key
+- private key => 256b
+- public key and G points on curve
+- public key => x (256b) and y (256b)
+- only x - compressed
+- both x and y - uncompressed
+- Uncompressed public key => 04xy
+- Compressed public key => 02x (even y) or 03x (odd y)
+
+- bitcoin uses Bitcoin address (hash of public key)
+- public key -> hash sha256 -> hash RPIEMD 160 -> Public Key Hash (29B) -> Base58Check Encode -> Bitcoin Address
+- base58check => version prefix + payload -> Hash(payload) -> version + payload + checksum -> encode in base58
+
+- Private key two forms
+- Wallet Input Format (WIF) -- uncompressed public key -- 5 (mainnet)
+- Wallet Input Format (WIF) -- compressed public key -- K or L (mainnet)
+
+TRANSACTIONS
+- data structures that encode the transfer of values b/w partcipants
+- Structure
+  -- version 4B
+  -- i/p counter 1-9B
+  -- i/ps variable
+  -- o/p counter 1-9B
+  -- o/ps variable
+  -- locktime 4B
+
+- Transaction o/s building blocks Bitcoin
+- indivisible chuncks of Bitcoin currency recorded in blockchain
+- recognized valid by entire blockchain
+
+- full nodes track all available and spendable o/ps - unspent transaction outputs - UTXOs
+- new transaction - i/p o/p - one or more UTXOs
+- coll of all UTXOs in bitcoin network - UTXO set
+- Bitcoin blc = sum of all UTXO that can be spent with priv key
+
+- Bitcoin balance NOT stored in blockchain
+- blockchain only stores transactions
+
+- wallets maintains/uses database to track UTXOs
+
+- o/ps come first - Coinbase transactions - special transaction rewarded to miners
+- UTXOs format:
+  -- amount of bitcoin
+  -- locking script size
+  -- locking script [cond req to spnd bitcoin] (script public key/ witness script)
+- inputs format:
+  -- tx hash (of previous UTXO) 32B
+  -- output index (previous UTXO) 4B
+  -- Unlocking script (size, script, seq no)
+
+- change output
+- UTXO spent all or none
+- sum of i/p value NOT equal to sum of o/p value
+- diff is fee given to miners
+
+- Tx - many inputs
+- # of ips and ops incr size of tx data
+- fee req in bitcoin depends on size of tx and NOT bitcoins sent 
+

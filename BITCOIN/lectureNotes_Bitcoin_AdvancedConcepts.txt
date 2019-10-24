@@ -1,0 +1,110 @@
+////////////////////////////////////////
+BITCOIN SCRIPTING
+////////////////////////////////////////
+MULTI SIG SCRIPTS
+- sets a condition
+- N public keys are recorded
+- M of them must provide signature to unlock the funds
+- M of N scheme
+- N total number of keys
+- M threshold of sigs for validation
+
+- secure but cumbersome
+- special wallet that can generate multi sig transaction script
+- bigger trans size
+- burden on sender in form of fees
+- UTXO in RAM of every full node
+
+Pay To Script Hash
+- complex locking script replaced by it cryp. hash
+- pay to a script matching the hash
+- redeem script - locking script replaced by hash
+- redeem script - presented to the system at time of spending UTXO
+- locking script doesnot contain the conditions for spending the output
+- locking script only contains hash
+- redeem script presented as unlocking script when op is spent
+- burden of fees and complexity on recipient of transaction
+
+SCRIPT CONTROL FLOW
+- adv feature of bitcoin script
+- also called conditional clauses
+- cond. opcodes allow to create redeem script that has two ways to being unlocked
+- if X is true, redeem script is A else it is B
+- cond exp can be nested indefinitely (cond clause within a cond clause)
+- complex scripts can have hundreds/thousands of execution paths
+- no limit on nesting
+- consensus rules impose limit on max size (in bytes) of a script
+
+- recording a dig finger print of a signed legal contract to prove it was signed on a specific date
+- use return Tx type
+- add 80B of non-tran data to a tran output
+- return creates an unspendable op
+- doesnot need to stored in UTXO set (as potiently spendable)
+- return ops are recorded on blockchain
+- consume disk space and inc size of blockchain
+- RETURN <data>
+- no unlocking script to possible use retured op
+- return is provably unspendable
+- zero bitcoin amount 
+- any bitcoin assigned to such op is lost
+- cannot be ref as ip to another tx
+
+
+////////////////////////////////////////
+MECHANIC OF MINING
+////////////////////////////////////////
+- how bitcoin adds new blocks
+- verifiyes tx in a decentralized way
+- mining node: collects, validates, relays new tx
+- also aggregates tx and add them to a block
+- for block validation
+  -- include a list of fields
+  -- fields hashed to create block hash
+  -- block hash that satisfies difficulty tgt req
+- block header
+  -- version num - desc block str
+  -- prev block hash - hash of block header of prev block recv from the network mining node has accp/slct as parent of its block
+  -- merkel root - (coinbase 12.5B + all tx) > hashed > merkel tree leaf nodes > combined > merkel root
+  -- timestamp - seconds elapsed from 1st Jan 1970.
+- mining begins
+- cryp hash function used is SHA256
+- op of SHA256 is 256b long irr of ip
+- op is block hash
+- valid block hash < trg number
+- smaller target more difficult to find hash less than that number
+
+- bitcoin blocks generated every 10 mins avg
+- proof of work parameter is dynamic
+- adj to meet 10 mins intvl
+- target set, curr mining power of the network result in 10 min block interval
+- retargeting occurs auto and on every node ind
+- 2016 blocks /14 days retargetting
+- T_actual = time to produce 2016 blocks
+- T_expected = time to 20160 mins
+
+- Hardware mining rigs
+
+- Mining node transmit blocks to its peers
+- Recieve, validate, propogate new block
+
+////////////////////////////////////////
+BLOCKCHAIN FORKS
+////////////////////////////////////////
+- decentralized data structure
+- diff copies inconsistent
+- blocks arrive at nodes at diff times
+- forks are temp inconsistency between versions of blockchain
+- resolved by reconvergence as more blocks are added to one of the forks
+
+HARD FORK
+- change in the consensus rules
+- network does not converge to one chain
+- not fwd compatible
+
+SOFT FORK
+- fwd compatible change to consensus rule
+- allows an unupgraded client to cont to operate in consensus with new rules
+- constrain consensus rule and not expand them
+- tx/blocks under new rule valid under old rule
+- new rule can only limit what is valid
+- otherwise trigger a hard fork when rejected under old rule
